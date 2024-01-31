@@ -5,9 +5,7 @@
 	<title></title>
 	<meta name="generator" content="LibreOffice 7.3.7.2 (Linux)"/>
 	<meta name="created" content="00:00:00"/>
-	<meta name="changed" content="2024-01-31T12:36:14.820815782"/>
-	<meta name="created" content="00:00:00">
-	<meta name="changed" content="00:00:00">
+	<meta name="changed" content="2024-01-31T14:57:28.631359646"/>
 	<style type="text/css">
 		@page { size: 8.27in 11.69in; margin: 0.79in }
 		p { line-height: 115%; margin-bottom: 0.1in; background: transparent; background: transparent }
@@ -19,12 +17,14 @@
 		a:visited { color: #800000; text-decoration: underline }
 	</style>
 </head>
-<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><pre class="western"><b>Запуск nginx на нестандвртном порту 3 разными способами</b>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><pre class="western"><font size="3" style="font-size: 12pt"><b>1. </b><b>Запуск nginx на нестандвртном порту 3 разными способами</b></font>
 
 По умолчанию, SELinux не позволяет такой запуск - служба не стартует при
  запуске, о чем свидетельствуют сообщения при запуске ВМ:
 
-  selinux: Job for nginx.service failed because the control process exited with error code. See &quot;systemctl status nginx.service&quot; and &quot;journalctl -xe&quot; for details.
+  selinux: Job for nginx.service failed because the control process exited with
+ error code. See &quot;systemctl status nginx.service&quot; and &quot;journalctl -xe&quot; for
+ details.
 
   
 Сначала потребовалось установить необходимые для выполнения задания утилиты audit2why audit2allow:
@@ -43,7 +43,7 @@ grep nginx /var/log/audit/audit.log
 
 grep 1706686187.869:801 /var/log/audit/audit.log | audit2why
 
-Вывод команды, собственно, и дает подсказку для первого способа запуска nginx:
+<b>Вывод команды, собственно, и дает подсказку для первого способа запуска nginx:</b>
 
 Was caused by:
         The boolean nis_enabled was set incorrectly. 
@@ -54,10 +54,12 @@ Was caused by:
         # setsebool -P nis_enabled 1
 
 После выполнения setsebool -P nis_enabled 1 
+
 nginx благополучно запустился на порту 4881:
 
 [root@selinux ~]# systemctl restart  nginx
 [root@selinux ~]# systemctl status  nginx
+
 ● nginx.service - The nginx HTTP and reverse proxy server
    Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
    Active: active (running) since Wed 2024-01-31 08:15:14 UTC; 10s ago
@@ -78,8 +80,8 @@ Jan 31 08:15:14 selinux nginx[3344]: nginx: configuration file
 Jan 31 08:15:14 selinux systemd[1]: Started The nginx HTTP and reverse proxy
  server.
 
-Второй способ запуска на нестандвртном порту - включение этого порта в
- конфигурацию SELinux с помощью команды semanage:
+<b>Второй способ запуска на нестандвртном порту - включение этого порта в</b>
+ <b>конфигурацию SELinux с помощью команды semanage:</b>
 
 [root@selinux ~]# semanage port -l | grep http
 http_cache_port_t              tcp      8080, 8118, 8123, 10001-10010
@@ -131,7 +133,7 @@ pegasus_https_port_t           tcp      5989
 
 [root@selinux ~]# semanage port -d -t http_port_t -p tcp 4881
 
-Третий способ - добавление модуля для nginx в SELinux.
+<b>Третий способ - добавление модуля для nginx в SELinux.</b>
 
 После удаления порта nginx не запускается опять:
 Jan 31 08:22:59 selinux systemd[1]: Failed to start The nginx HTTP and reverse
@@ -172,9 +174,302 @@ nginx   1.0
 модуль работает, сервер тоже :)
 </pre><p style="font-variant: normal; font-style: normal; line-height: 100%; margin-bottom: 0.2in; background: transparent; text-decoration: none">
 <a name="docs-internal-guid-8d29ed9b-7fff-cbab-2a4d-263636fe2ffe"></a>
-<font color="#000000"><font face="Courier New, monospace"><font size="2" style="font-size: 11pt"><b><span style="background: transparent">Обеспечение
+<font color="#000000"><font face="Courier New, monospace"><font size="3" style="font-size: 12pt"><b><span style="background: transparent">2.Обеспечение
 работоспособности приложения при
 включенном SELinux</span></b></font></font></font></p>
-<pre class="western" style="margin-bottom: 0.2in"></pre>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Разворачиваем
+стенд для работы.</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Выполним
+клонирование репозитория: </font></font>
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">git
+clone <a href="https://github.com/mbfx/otus-linux-adm.git">https://github.com/mbfx/otus-linux-adm.git</a></font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">и
+запускаем машины:</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">vagrant
+up</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Подключаюсь
+к клиенту:</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">vagrant
+ssh client</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Ввод
+команд по добавлению в зону DNS еще одной
+записи не дает результата по</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+ <font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">причине
+неправильного контекста безопасности
+для развернутой службы named:</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">команда
+для диагностики ошибок SELinux на клиенте
+</font></font>
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">cat
+/var/log/audit/audit.log | audit2why</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">возвращает
+пустой вывод, что сообщает нам, что на
+стороне клиента ошибок нет.</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Диагностируем
+сервер:</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">[root@ns01
+~]# getenforce </font></font>
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Enforcing</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">[root@ns01
+~]# cat /var/log/audit/audit.log | audit2allow</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">#=============
+named_t ==============</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">#!!!!
+WARNING: 'etc_t' is a base type.</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">allow
+named_t etc_t:file create;</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Сразу
+видно, что контекст безопасности SELinux
+неверный - вместо named_t у нас</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+ <font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">etc_t</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Еще
+подтверждение этому следующая команда:</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">[root@ns01
+~]# ls -laZ /etc/named</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">drw-rwx---.
+root named system_u:object_r:etc_t:s0       .</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">drwxr-xr-x.
+root root  system_u:object_r:etc_t:s0       ..</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">drw-rwx---.
+root named unconfined_u:object_r:etc_t:s0   dynamic</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
+root named system_u:object_r:etc_t:s0       named.50.168.192.rev</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
+root named system_u:object_r:etc_t:s0       named.dns.lab</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
+root named system_u:object_r:etc_t:s0       named.dns.lab.view1</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
+root named system_u:object_r:etc_t:s0       named.newdns.lab</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Видно,
+что установленный контекст - etc_t, а это
+неправильно, изменения</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+ <font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">конфигурации
+невозможны</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Чтобы
+понять, какой нам нужен правильный тип
+контекста для работы, выполним его</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+ <font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">поиск
+с помоющью команды</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">[root@ns01
+~]# semanage fcontext -l | grep named</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Правильный
+контекст - named_zone_t</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Теперь
+нужно установить его на данный каталог
+- тогда изменения конфигурации</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+ <font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">будут
+возможны - </font></font>
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">это
+самый простой способ заставить работать
+сервис DNS. Нам не придется</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+ <font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">выполнять
+переустановку или менятькаталоги
+приложения.</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Меняем
+контекст на верный:</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">[root@ns01
+~]# sudo chcon -R -t named_zone_t /etc/named</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">и
+проверяем:</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">[root@ns01
+~]# ls -laZ /etc/named</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">drw-rwx---.
+root named system_u:object_r:named_zone_t:s0 .</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">drwxr-xr-x.
+root root  system_u:object_r:etc_t:s0       ..</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">drw-rwx---.
+root named unconfined_u:object_r:named_zone_t:s0 dynamic</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
+root named system_u:object_r:named_zone_t:s0 named.50.168.192.rev</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
+root named system_u:object_r:named_zone_t:s0 named.dns.lab</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
+root named system_u:object_r:named_zone_t:s0 named.dns.lab.view1</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
+root named system_u:object_r:named_zone_t:s0 named.newdns.lab</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">После
+этих манипуляций изменения зоны с
+клиента проходит без ошибок, все.</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Для
+того, чтобы стенд был рабочим изначально,
+я модифицировал playbook.yml</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">добавив
+в него секцию с выполнением команды
+смены контекста на сервере ns01:</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-
+name: fixing SELinux context</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+    <font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">ansible.builtin.command:
+/usr/bin/chcon -R -t named_zone_t /etc/named</font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+      
+</p>
+<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">После
+этого стенд загружается и изменение
+зоны возможно сразу.</font></font></p>
 </body>
 </html>
