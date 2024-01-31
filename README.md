@@ -1,19 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-	<title></title>
-	<meta name="generator" content="LibreOffice 7.3.7.2 (Linux)"/>
-	<meta name="created" content="2024-01-31T15:12:53.966835096"/>
-	<meta name="changed" content="2024-01-31T15:15:51.610428593"/>
-	<style type="text/css">
-		@page { size: 8.27in 11.69in; margin: 0.79in }
-		p { line-height: 115%; margin-bottom: 0.1in; background: transparent }
-	</style>
 </head>
 <body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><p style="line-height: 0.2in; margin-bottom: 0in">
-<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="3" style="font-size: 12pt"><b><span style="background: transparent">1.
-Запуск nginx на нестандвртном порту 3
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="3" style="font-size: 14pt"><b><span style="background: transparent">1.
+Запуск nginx на нестандартном порту 3
 разными способами</span></b></font></font></font></p>
 <p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
@@ -492,7 +480,7 @@ nginx: worker process</span></font></font></span></font></p>
 <p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="3" style="font-size: 12pt"><b><span style="background: transparent">2.Обеспечение
+<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="3" style="font-size: 14pt"><b><span style="background: transparent">2.Обеспечение
 работоспособности приложения при
 включенном SELinux</span></b></font></font></font></p>
 <p style="line-height: 0.2in; margin-bottom: 0in"><br/>
