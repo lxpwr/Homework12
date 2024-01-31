@@ -4,472 +4,765 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 	<title></title>
 	<meta name="generator" content="LibreOffice 7.3.7.2 (Linux)"/>
-	<meta name="created" content="00:00:00"/>
-	<meta name="changed" content="2024-01-31T14:57:28.631359646"/>
+	<meta name="created" content="2024-01-31T15:12:53.966835096"/>
+	<meta name="changed" content="2024-01-31T15:15:51.610428593"/>
 	<style type="text/css">
 		@page { size: 8.27in 11.69in; margin: 0.79in }
-		p { line-height: 115%; margin-bottom: 0.1in; background: transparent; background: transparent }
-		pre { background: transparent; background: transparent }
-		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
-		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
-		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
-		a:link { color: #000080; text-decoration: underline }
-		a:visited { color: #800000; text-decoration: underline }
+		p { line-height: 115%; margin-bottom: 0.1in; background: transparent }
 	</style>
 </head>
-<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><pre class="western"><font size="3" style="font-size: 12pt"><b>1. </b><b>Запуск nginx на нестандвртном порту 3 разными способами</b></font>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><p style="line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="3" style="font-size: 12pt"><b><span style="background: transparent">1.
+Запуск nginx на нестандвртном порту 3
+разными способами</span></b></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-По умолчанию, SELinux не позволяет такой запуск - служба не стартует при
- запуске, о чем свидетельствуют сообщения при запуске ВМ:
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">По
+умолчанию, SELinux не позволяет такой запуск
+- служба не стартует при</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">запуске,
+о чем свидетельствуют сообщения при
+запуске ВМ:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-  selinux: Job for nginx.service failed because the control process exited with
- error code. See &quot;systemctl status nginx.service&quot; and &quot;journalctl -xe&quot; for
- details.
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">selinux:
+Job for nginx.service failed because the control process exited with</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">error
+code. See &quot;systemctl status nginx.service&quot; and &quot;journalctl
+-xe&quot; for</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">details.</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-  
-Сначала потребовалось установить необходимые для выполнения задания утилиты audit2why audit2allow:
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Сначала
+потребовалось установить необходимые
+для выполнения задания утилиты audit2why
+audit2allow:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-yum install setroubleshoot
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">yum
+install setroubleshoot</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-Их не было в образе ВМ вагранта.
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Их
+не было в образе ВМ вагранта.</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-Утилита audit2why позволяет узнать причину неработоспособности службы:
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Утилита
+audit2why позволяет узнать причину
+неработоспособности службы:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-Сначала мне нужно было узнать, какое событие анализировать с помощью этой 
-утилиты, т.к. временной штамп в методичке, конечно же другой.
-Для этого я выполнил команду:
-grep nginx /var/log/audit/audit.log
-и проанализировав вывод, обнаружил нужный лог и обработал его:
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Сначала
+мне нужно было узнать, какое событие
+анализировать с помощью этой </span></font></font></font>
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">утилиты,
+т.к. временной штамп в методичке, конечно
+же другой.</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Для
+этого я выполнил команду:</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">grep
+nginx /var/log/audit/audit.log</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">и
+проанализировав вывод, обнаружил нужный
+лог и обработал его:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-grep 1706686187.869:801 /var/log/audit/audit.log | audit2why
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">grep
+1706686187.869:801 /var/log/audit/audit.log | audit2why</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-<b>Вывод команды, собственно, и дает подсказку для первого способа запуска nginx:</b>
+</p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><b><span style="background: transparent">Вывод
+команды, собственно, и дает подсказку
+для первого способа запуска nginx:</span></b></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-Was caused by:
-        The boolean nis_enabled was set incorrectly. 
-        Description:
-        Allow nis to enabled
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Was
+caused by:</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">The
+boolean nis_enabled was set incorrectly. </span></font></font></font>
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Description:</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Allow
+nis to enabled</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-        Allow access by executing:
-        # setsebool -P nis_enabled 1
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Allow
+access by executing:</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">#
+setsebool -P nis_enabled 1</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-После выполнения setsebool -P nis_enabled 1 
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">После
+выполнения setsebool -P nis_enabled 1 </span></font></font></font>
+</p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-nginx благополучно запустился на порту 4881:
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">nginx
+благополучно запустился на порту 4881:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-[root@selinux ~]# systemctl restart  nginx
-[root@selinux ~]# systemctl status  nginx
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@selinux
+~]# systemctl restart nginx</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@selinux
+~]# systemctl status nginx</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-● nginx.service - The nginx HTTP and reverse proxy server
-   Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
-   Active: active (running) since Wed 2024-01-31 08:15:14 UTC; 10s ago
-  Process: 3346 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
-  Process: 3344 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
-  Process: 3343 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
- Main PID: 3348 (nginx)
-   CGroup: /system.slice/nginx.service
-           ├─3348 nginx: master process /usr/sbin/nginx
-           └─3350 nginx: worker process
+</p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><span style="background: transparent">●
+<font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="font-weight: normal">nginx.service
+- The nginx HTTP and reverse proxy server</span></font></font></span></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Loaded:
+loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor
+preset: disabled)</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Active:
+active (running) since Wed 2024-01-31 08:15:14 UTC; 10s ago</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Process:
+3346 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Process:
+3344 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Process:
+3343 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited,
+status=0/SUCCESS)</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Main
+PID: 3348 (nginx)</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">CGroup:
+/system.slice/nginx.service</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><span style="background: transparent">├─<font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="font-weight: normal">3348
+nginx: master process /usr/sbin/nginx</span></font></font></span></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><span style="background: transparent">└─<font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="font-weight: normal">3350
+nginx: worker process</span></font></font></span></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-Jan 31 08:15:14 selinux systemd[1]: Starting The nginx HTTP and reverse proxy
- server...
-Jan 31 08:15:14 selinux nginx[3344]: nginx: the configuration file
- /etc/nginx/nginx.conf syntax is ok
-Jan 31 08:15:14 selinux nginx[3344]: nginx: configuration file
- /etc/nginx/nginx.conf test is successful
-Jan 31 08:15:14 selinux systemd[1]: Started The nginx HTTP and reverse proxy
- server.
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Jan
+31 08:15:14 selinux systemd[1]: Starting The nginx HTTP and reverse
+proxy</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">server...</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Jan
+31 08:15:14 selinux nginx[3344]: nginx: the configuration file</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">/etc/nginx/nginx.conf
+syntax is ok</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Jan
+31 08:15:14 selinux nginx[3344]: nginx: configuration file</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">/etc/nginx/nginx.conf
+test is successful</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Jan
+31 08:15:14 selinux systemd[1]: Started The nginx HTTP and reverse
+proxy</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">server.</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-<b>Второй способ запуска на нестандвртном порту - включение этого порта в</b>
- <b>конфигурацию SELinux с помощью команды semanage:</b>
+</p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><b><span style="background: transparent">Второй
+способ запуска на нестандвртном порту
+- включение этого порта в</span></b></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><b><span style="background: transparent">конфигурацию
+SELinux с помощью команды semanage:</span></b></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-[root@selinux ~]# semanage port -l | grep http
-http_cache_port_t              tcp      8080, 8118, 8123, 10001-10010
-http_cache_port_t              udp      3130
-http_port_t                    tcp      80, 81, 443, 488, 8008, 8009, 8443, 9000
-pegasus_http_port_t            tcp      5988
-pegasus_https_port_t           tcp      5989
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@selinux
+~]# semanage port -l | grep http</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">http_cache_port_t
+tcp 8080, 8118, 8123, 10001-10010</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">http_cache_port_t
+udp 3130</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">http_port_t
+tcp 80, 81, 443, 488, 8008, 8009, 8443, 9000</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">pegasus_http_port_t
+tcp 5988</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">pegasus_https_port_t
+tcp 5989</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-Здесь мы видим, что в парамете http_port_t нет нужного нам 4881 и запуск будет
- невозможен.
-Добавим нужны порт:
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Здесь
+мы видим, что в парамете http_port_t нет
+нужного нам 4881 и запуск будет</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">невозможен.</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Добавим
+нужны порт:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-[root@selinux ~]# semanage port -a -t http_port_t -p tcp 4881
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@selinux
+~]# semanage port -a -t http_port_t -p tcp 4881</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-После этого nginx опять радостно сообщает, что у него все хорошо :) 
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">После
+этого nginx опять радостно сообщает, что
+у него все хорошо :) </span></font></font></font>
+</p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-[root@selinux ~]# systemctl restart  nginx
-[root@selinux ~]# systemctl status  nginx
-● nginx.service - The nginx HTTP and reverse proxy server
-   Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
-   Active: active (running) since Wed 2024-01-31 08:21:36 UTC; 3s ago
-  Process: 3405 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
-  Process: 3403 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
-  Process: 3402 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
- Main PID: 3407 (nginx)
-   CGroup: /system.slice/nginx.service
-           ├─3407 nginx: master process /usr/sbin/nginx
-           └─3409 nginx: worker process
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@selinux
+~]# systemctl restart nginx</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@selinux
+~]# systemctl status nginx</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><span style="background: transparent">●
+<font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="font-weight: normal">nginx.service
+- The nginx HTTP and reverse proxy server</span></font></font></span></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Loaded:
+loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor
+preset: disabled)</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Active:
+active (running) since Wed 2024-01-31 08:21:36 UTC; 3s ago</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Process:
+3405 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Process:
+3403 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Process:
+3402 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited,
+status=0/SUCCESS)</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Main
+PID: 3407 (nginx)</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">CGroup:
+/system.slice/nginx.service</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><span style="background: transparent">├─<font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="font-weight: normal">3407
+nginx: master process /usr/sbin/nginx</span></font></font></span></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><span style="background: transparent">└─<font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="font-weight: normal">3409
+nginx: worker process</span></font></font></span></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-Jan 31 08:21:36 selinux systemd[1]: Starting The nginx HTTP and reverse proxy
- server...
-Jan 31 08:21:36 selinux nginx[3403]: nginx: the configuration file
- /etc/nginx/nginx.conf syntax is ok
-Jan 31 08:21:36 selinux nginx[Ж3403]: nginx: configuration file
- /etc/nginx/nginx.conf test is successful
-Jan 31 08:21:36 selinux systemd[1]: Started The nginx HTTP and reverse proxy
- server.
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Jan
+31 08:21:36 selinux systemd[1]: Starting The nginx HTTP and reverse
+proxy</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">server...</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Jan
+31 08:21:36 selinux nginx[3403]: nginx: the configuration file</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">/etc/nginx/nginx.conf
+syntax is ok</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Jan
+31 08:21:36 selinux nginx[Ж3403]: nginx: configuration file</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">/etc/nginx/nginx.conf
+test is successful</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Jan
+31 08:21:36 selinux systemd[1]: Started The nginx HTTP and reverse
+proxy</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">server.</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-Видим, что порт появился в списке:
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Видим,
+что порт появился в списке:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-[root@selinux ~]# semanage port -l | grep http
-http_cache_port_t              tcp      8080, 8118, 8123, 10001-10010
-http_cache_port_t              udp      3130
-http_port_t                    tcp      4881, 80, 81, 443, 488, 8008, 8009, 8443, 9000
-pegasus_http_port_t            tcp      5988
-pegasus_https_port_t           tcp      5989
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@selinux
+~]# semanage port -l | grep http</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">http_cache_port_t
+tcp 8080, 8118, 8123, 10001-10010</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">http_cache_port_t
+udp 3130</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">http_port_t
+tcp 4881, 80, 81, 443, 488, 8008, 8009, 8443, 9000</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">pegasus_http_port_t
+tcp 5988</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">pegasus_https_port_t
+tcp 5989</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-Удаляем его для проверки следующего способа:
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Удаляем
+его для проверки следующего способа:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-[root@selinux ~]# semanage port -d -t http_port_t -p tcp 4881
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@selinux
+~]# semanage port -d -t http_port_t -p tcp 4881</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-<b>Третий способ - добавление модуля для nginx в SELinux.</b>
+</p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><b><span style="background: transparent">Третий
+способ - добавление модуля для nginx в
+SELinux.</span></b></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-После удаления порта nginx не запускается опять:
-Jan 31 08:22:59 selinux systemd[1]: Failed to start The nginx HTTP and reverse
- proxy server.
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">После
+удаления порта nginx не запускается опять:</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Jan
+31 08:22:59 selinux systemd[1]: Failed to start The nginx HTTP and
+reverse</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">proxy
+server.</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-Теперь используем другую утилиту audit2allow, чтобы понять, как еще можно
- заставить работать nginx на 4881 порту. Для этого дадим вывод лога утилите:
-[root@selinux ~]# grep nginx /var/log/audit/audit.log | audit2allow -M nginx
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Теперь
+используем другую утилиту audit2allow, чтобы
+понять, как еще можно</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">заставить
+работать nginx на 4881 порту. Для этого дадим
+вывод лога утилите:</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@selinux
+~]# grep nginx /var/log/audit/audit.log | audit2allow -M nginx</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-******************** IMPORTANT ***********************
-To make this policy package active, execute:
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">********************
+IMPORTANT ***********************</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">To
+make this policy package active, execute:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-semodule -i nginx.pp
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">semodule
+-i nginx.pp</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-Как видим, ответ есть прямо в выводе. И введя команду:
-semodule -i nginx.pp
-мы опять получаем возможность запуска сервера:
-[root@selinux ~]# systemctl start  nginx
-[root@selinux ~]# systemctl status  nginx
-● nginx.service - The nginx HTTP and reverse proxy server
-   Loaded: loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
-   Active: active (running) since Wed 2024-01-31 08:27:06 UTC; 3s ago
-  Process: 3473 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)
-  Process: 3471 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
-  Process: 3470 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited, status=0/SUCCESS)
- Main PID: 3475 (nginx)
-   CGroup: /system.slice/nginx.service
-           ├─3475 nginx: master process /usr/sbin/nginx
-           └─3477 nginx: worker process
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Как
+видим, ответ есть прямо в выводе. И введя
+команду:</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">semodule
+-i nginx.pp</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">мы
+опять получаем возможность запуска
+сервера:</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@selinux
+~]# systemctl start nginx</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@selinux
+~]# systemctl status nginx</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><span style="background: transparent">●
+<font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="font-weight: normal">nginx.service
+- The nginx HTTP and reverse proxy server</span></font></font></span></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Loaded:
+loaded (/usr/lib/systemd/system/nginx.service; disabled; vendor
+preset: disabled)</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Active:
+active (running) since Wed 2024-01-31 08:27:06 UTC; 3s ago</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Process:
+3473 ExecStart=/usr/sbin/nginx (code=exited, status=0/SUCCESS)</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Process:
+3471 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Process:
+3470 ExecStartPre=/usr/bin/rm -f /run/nginx.pid (code=exited,
+status=0/SUCCESS)</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Main
+PID: 3475 (nginx)</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">CGroup:
+/system.slice/nginx.service</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><span style="background: transparent">├─<font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="font-weight: normal">3475
+nginx: master process /usr/sbin/nginx</span></font></font></span></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><span style="background: transparent">└─<font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="font-weight: normal">3477
+nginx: worker process</span></font></font></span></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-Команда
-[root@selinux ~]# semodule -l | grep nginx
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Команда</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@selinux
+~]# semodule -l | grep nginx</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-дает нам:
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">дает
+нам:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-nginx   1.0
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">nginx
+1.0</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
-модуль работает, сервер тоже :)
-</pre><p style="font-variant: normal; font-style: normal; line-height: 100%; margin-bottom: 0.2in; background: transparent; text-decoration: none">
-<a name="docs-internal-guid-8d29ed9b-7fff-cbab-2a4d-263636fe2ffe"></a>
-<font color="#000000"><font face="Courier New, monospace"><font size="3" style="font-size: 12pt"><b><span style="background: transparent">2.Обеспечение
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">модуль
+работает, сервер тоже :)</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
+
+</p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="3" style="font-size: 12pt"><b><span style="background: transparent">2.Обеспечение
 работоспособности приложения при
 включенном SELinux</span></b></font></font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Разворачиваем
-стенд для работы.</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Выполним
-клонирование репозитория: </font></font>
-</p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">git
-clone <a href="https://github.com/mbfx/otus-linux-adm.git">https://github.com/mbfx/otus-linux-adm.git</a></font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">и
-запускаем машины:</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Разворачиваем
+стенд для работы.</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">vagrant
-up</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Выполним
+клонирование репозитория: </span></font></font></font>
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">git
+clone https://github.com/mbfx/otus-linux-adm.git</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">и
+запускаем машины:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Подключаюсь
-к клиенту:</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">vagrant
+up</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">vagrant
-ssh client</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Подключаюсь
+к клиенту:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Ввод
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">vagrant
+ssh client</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
+
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Ввод
 команд по добавлению в зону DNS еще одной
-записи не дает результата по</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
- <font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">причине
+записи не дает результата по</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">причине
 неправильного контекста безопасности
-для развернутой службы named:</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+для развернутой службы named:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">команда
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">команда
 для диагностики ошибок SELinux на клиенте
-</font></font>
+</span></font></font></font>
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">cat
-/var/log/audit/audit.log | audit2why</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">cat
+/var/log/audit/audit.log | audit2why</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">возвращает
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">возвращает
 пустой вывод, что сообщает нам, что на
-стороне клиента ошибок нет.</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
+стороне клиента ошибок нет.</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
+
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Диагностируем
+сервер:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
+
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@ns01
+~]# getenforce </span></font></font></font>
+</p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Enforcing</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@ns01
+~]# cat /var/log/audit/audit.log | audit2allow</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0.2in"><br/>
 <br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Диагностируем
-сервер:</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">#=============
+named_t ==============</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">[root@ns01
-~]# getenforce </font></font>
-</p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Enforcing</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">[root@ns01
-~]# cat /var/log/audit/audit.log | audit2allow</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">#!!!!
+WARNING: 'etc_t' is a base type.</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">allow
+named_t etc_t:file create;</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">#=============
-named_t ==============</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">#!!!!
-WARNING: 'etc_t' is a base type.</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">allow
-named_t etc_t:file create;</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
-
-</p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Сразу
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Сразу
 видно, что контекст безопасности SELinux
-неверный - вместо named_t у нас</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
- <font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">etc_t</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Еще
-подтверждение этому следующая команда:</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+неверный - вместо named_t у нас</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">etc_t</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Еще
+подтверждение этому следующая команда:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">[root@ns01
-~]# ls -laZ /etc/named</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">drw-rwx---.
-root named system_u:object_r:etc_t:s0       .</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">drwxr-xr-x.
-root root  system_u:object_r:etc_t:s0       ..</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">drw-rwx---.
-root named unconfined_u:object_r:etc_t:s0   dynamic</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
-root named system_u:object_r:etc_t:s0       named.50.168.192.rev</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
-root named system_u:object_r:etc_t:s0       named.dns.lab</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
-root named system_u:object_r:etc_t:s0       named.dns.lab.view1</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
-root named system_u:object_r:etc_t:s0       named.newdns.lab</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@ns01
+~]# ls -laZ /etc/named</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">drw-rwx---.
+root named system_u:object_r:etc_t:s0 .</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">drwxr-xr-x.
+root root system_u:object_r:etc_t:s0 ..</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">drw-rwx---.
+root named unconfined_u:object_r:etc_t:s0 dynamic</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">-rw-rw----.
+root named system_u:object_r:etc_t:s0 named.50.168.192.rev</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">-rw-rw----.
+root named system_u:object_r:etc_t:s0 named.dns.lab</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">-rw-rw----.
+root named system_u:object_r:etc_t:s0 named.dns.lab.view1</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">-rw-rw----.
+root named system_u:object_r:etc_t:s0 named.newdns.lab</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Видно,
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Видно,
 что установленный контекст - etc_t, а это
-неправильно, изменения</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
- <font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">конфигурации
-невозможны</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Чтобы
+неправильно, изменения</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">конфигурации
+невозможны</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Чтобы
 понять, какой нам нужен правильный тип
-контекста для работы, выполним его</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
- <font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">поиск
-с помоющью команды</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+контекста для работы, выполним его</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">поиск
+с помоющью команды</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">[root@ns01
-~]# semanage fcontext -l | grep named</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@ns01
+~]# semanage fcontext -l | grep named</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Правильный
-контекст - named_zone_t</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Правильный
+контекст - named_zone_t</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Теперь
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Теперь
 нужно установить его на данный каталог
-- тогда изменения конфигурации</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
- <font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">будут
-возможны - </font></font>
+- тогда изменения конфигурации</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">будут
+возможны - </span></font></font></font>
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">это
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">это
 самый простой способ заставить работать
-сервис DNS. Нам не придется</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
- <font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">выполнять
+сервис DNS. Нам не придется</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">выполнять
 переустановку или менятькаталоги
-приложения.</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+приложения.</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Меняем
-контекст на верный:</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Меняем
+контекст на верный:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">[root@ns01
-~]# sudo chcon -R -t named_zone_t /etc/named</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@ns01
+~]# sudo chcon -R -t named_zone_t /etc/named</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">и
-проверяем:</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">и
+проверяем:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">[root@ns01
-~]# ls -laZ /etc/named</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">drw-rwx---.
-root named system_u:object_r:named_zone_t:s0 .</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">drwxr-xr-x.
-root root  system_u:object_r:etc_t:s0       ..</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">drw-rwx---.
-root named unconfined_u:object_r:named_zone_t:s0 dynamic</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
-root named system_u:object_r:named_zone_t:s0 named.50.168.192.rev</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
-root named system_u:object_r:named_zone_t:s0 named.dns.lab</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
-root named system_u:object_r:named_zone_t:s0 named.dns.lab.view1</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-rw-rw----.
-root named system_u:object_r:named_zone_t:s0 named.newdns.lab</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">[root@ns01
+~]# ls -laZ /etc/named</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">drw-rwx---.
+root named system_u:object_r:named_zone_t:s0 .</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">drwxr-xr-x.
+root root system_u:object_r:etc_t:s0 ..</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">drw-rwx---.
+root named unconfined_u:object_r:named_zone_t:s0 dynamic</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">-rw-rw----.
+root named system_u:object_r:named_zone_t:s0 named.50.168.192.rev</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">-rw-rw----.
+root named system_u:object_r:named_zone_t:s0 named.dns.lab</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">-rw-rw----.
+root named system_u:object_r:named_zone_t:s0 named.dns.lab.view1</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">-rw-rw----.
+root named system_u:object_r:named_zone_t:s0 named.newdns.lab</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">После
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">После
 этих манипуляций изменения зоны с
-клиента проходит без ошибок, все.</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+клиента проходит без ошибок, все.</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">Для
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">Для
 того, чтобы стенд был рабочим изначально,
-я модифицировал playbook.yml</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">добавив
+я модифицировал playbook.yml</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">добавив
 в него секцию с выполнением команды
-смены контекста на сервере ns01:</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<br/>
+смены контекста на сервере ns01:</span></font></font></font></p>
+<p style="line-height: 0.2in; margin-bottom: 0in"><br/>
 
 </p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">-
-name: fixing SELinux context</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-    <font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">ansible.builtin.command:
-/usr/bin/chcon -R -t named_zone_t /etc/named</font></font></p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-      
-</p>
-<p style="line-height: 100%; margin-bottom: 0in; background: transparent">
-<font face="Liberation Mono, monospace"><font size="2" style="font-size: 10pt">После
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">-
+name: fixing SELinux context</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">ansible.builtin.command:
+/usr/bin/chcon -R -t named_zone_t /etc/named</span></font></font></font></p>
+<p style="font-weight: normal; line-height: 0.2in; margin-bottom: 0in">
+<font color="#000000"><font face="Droid Sans Mono, monospace, monospace"><font size="2" style="font-size: 10pt"><span style="background: transparent">После
 этого стенд загружается и изменение
-зоны возможно сразу.</font></font></p>
+зоны возможно сразу.</span></font></font></font></p>
+<p style="line-height: 100%; margin-bottom: 0in"><br/>
+
+</p>
 </body>
 </html>
