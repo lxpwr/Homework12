@@ -1,25 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-	<title></title>
-	<meta name="generator" content="LibreOffice 7.3.7.2 (Linux)"/>
-	<meta name="created" content="00:00:00"/>
-	<meta name="changed" content="00:00:00"/>
-	<style type="text/css">
-		@page { size: 8.27in 11.69in; margin: 0.79in }
-		p { line-height: 115%; margin-bottom: 0.1in; background: transparent }
-		pre { background: transparent }
-		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
-		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
-		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
-	</style>
-</head>
 <body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><pre class="western">Запуск nginx на нестандвртном порту 3 разными способами
 
-По умолчанию, SELinux не позволяет такой запуск - служба не стартует при запуске, о чем свидетельствуют сообщения при запуске ВМ:
+По умолчанию, SELinux не позволяет такой запуск - служба не стартует при запуске, о чем свидетельствуют 
+сообщения при запуске ВМ:
 
-  selinux: Job for nginx.service failed because the control process exited with error code. See &quot;systemctl status nginx.service&quot; and &quot;journalctl -xe&quot; for details.
+  selinux: Job for nginx.service failed because the control process exited with error code. 
+  See &quot;systemctl status nginx.service&quot; and &quot;journalctl -xe&quot; for details.
 
   
 Сначала потребовалось установить необходимые для выполнения задания утилиты audit2why audit2allow:
@@ -30,7 +15,8 @@ yum install setroubleshoot
 
 Утилита audit2why позволяет узнать причину неработоспособности службы:
 
-Сначала мне нужно было узнать, какое событие анализировать с помощью этой утилиты, т.к. временной штамп в методичке, конечно же другой.
+Сначала мне нужно было узнать, какое событие анализировать с помощью этой утилиты, т.к. временной штамп в методичке, 
+конечно же другой.
 Для этого я выполнил команду:
 grep nginx /var/log/audit/audit.log
 и проанализировав вывод, обнаружил нужный лог и обработал его:
@@ -120,7 +106,9 @@ pegasus_https_port_t           tcp      5989
 После удаления порта nginx не запускается опять:
 Jan 31 08:22:59 selinux systemd[1]: Failed to start The nginx HTTP and reverse proxy server.
 
-Теперь используем другую утилиту audit2allow, чтобы понять, как еще можно заставить работать nginx на 4881 порту. Для этого дадим вывод лога утилите:
+Теперь используем другую утилиту audit2allow, чтобы понять, как еще можно заставить работать nginx на 4881 порту. 
+Для этого дадим вывод лога утилите:
+
 [root@selinux ~]# grep nginx /var/log/audit/audit.log | audit2allow -M nginx
 
 ******************** IMPORTANT ***********************
